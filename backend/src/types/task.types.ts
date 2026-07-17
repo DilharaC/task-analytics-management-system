@@ -28,3 +28,37 @@ export interface UpdateTaskInput {
   priority?: TaskPriority;
   status?: TaskStatus;
 }
+
+
+export interface StatusBreakdown {
+  todo: number;
+  in_progress: number;
+  completed: number;
+}
+
+export interface PriorityBreakdown {
+  low: number;
+  medium: number;
+  high: number;
+}
+
+export interface AnalyticsSummary {
+  statusBreakdown: StatusBreakdown;
+  priorityBreakdown: PriorityBreakdown;
+  kpis: {
+    totalActive: number;
+    completedToday: number;
+    overdue: number;
+  };
+}
+
+
+export interface TaskQueryOptions {
+  search?: string;
+  status?: string;
+  priority?: string;
+  sortBy?: 'created_at' | 'due_date' | 'priority' | 'title';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+}

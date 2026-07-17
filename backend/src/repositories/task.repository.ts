@@ -1,5 +1,7 @@
 import { pool } from '../db/pool';
-import { Task, CreateTaskInput, UpdateTaskInput } from '../types/task.types';
+import { Task, CreateTaskInput, UpdateTaskInput, TaskQueryOptions } from '../types/task.types';
+
+
 
 export async function createTask(
   userId: string,
