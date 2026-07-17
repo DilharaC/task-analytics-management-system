@@ -54,3 +54,100 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmO
 ### Get All Tasks
 GET http://localhost:5000/api/tasks
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjY4MzIwLCJleHAiOjE3ODQzNTQ3MjB9.ub88axf2ouG6tyKtP8kBVik5vOVj8-lk1ukOFogTo90
+
+
+### Analytics Summary
+GET http://localhost:5000/api/analytics/summary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjY4MzIwLCJleHAiOjE3ODQzNTQ3MjB9.ub88axf2ouG6tyKtP8kBVik5vOVj8-lk1ukOFogTo90
+
+
+
+
+
+
+
+@baseUrl = http://localhost:5000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjY4MzIwLCJleHAiOjE3ODQzNTQ3MjB9.ub88axf2ouG6tyKtP8kBVik5vOVj8-lk1ukOFogTo90
+
+
+### Get all tasks
+GET {{baseUrl}}/api/tasks
+Authorization: Bearer {{token}}
+
+###
+
+### Search by title
+GET {{baseUrl}}/api/tasks?search=assignment
+Authorization: Bearer {{token}}
+
+###
+
+### Filter by status
+GET {{baseUrl}}/api/tasks?status=todo
+Authorization: Bearer {{token}}
+
+###
+
+### Filter by priority
+GET {{baseUrl}}/api/tasks?priority=high
+Authorization: Bearer {{token}}
+
+###
+
+### Filter by status and priority
+GET {{baseUrl}}/api/tasks?status=todo&priority=high
+Authorization: Bearer {{token}}
+
+###
+
+### Sort by created date (default)
+GET {{baseUrl}}/api/tasks?sortBy=created_at&sortOrder=desc
+Authorization: Bearer {{token}}
+
+###
+
+### Sort by due date ascending
+GET {{baseUrl}}/api/tasks?sortBy=due_date&sortOrder=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Sort by priority descending
+GET {{baseUrl}}/api/tasks?sortBy=priority&sortOrder=desc
+Authorization: Bearer {{token}}
+
+###
+
+### Sort by title ascending
+GET {{baseUrl}}/api/tasks?sortBy=title&sortOrder=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Pagination - Page 1
+GET {{baseUrl}}/api/tasks?page=1&limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Pagination - Page 2
+GET {{baseUrl}}/api/tasks?page=2&limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Search + Filter
+GET {{baseUrl}}/api/tasks?search=assignment&status=todo
+Authorization: Bearer {{token}}
+
+###
+
+### Search + Sort
+GET {{baseUrl}}/api/tasks?search=assignment&sortBy=due_date&sortOrder=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Full combination
+GET {{baseUrl}}/api/tasks?search=ass&status=todo&priority=high&sortBy=priority&sortOrder=desc&page=1&limit=10
+Authorization: Bearer {{token}}
