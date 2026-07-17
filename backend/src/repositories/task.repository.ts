@@ -23,12 +23,68 @@ export async function createTask(
   return result.rows[0];
 }
 
-export async function findTasksByUser(userId: string): Promise<Task[]> {
-  const result = await pool.query<Task>(
-    'SELECT * FROM tasks WHERE user_id = $1 ORDER BY created_at DESC',
-    [userId]
-  );
-  return result.rows;
+
+
+export async function findTasksByUser(
+  userId: string,
+  option: TaskQueryOptions
+): Promise<{ tasks: Task[]; total: number }> {
+  const {
+    search,
+    status,
+    priority,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+    page = 1,
+    limit = 10,
+  } = option;
+
+  const conditions: string[] = ['user_id = $1'];
+  const values: any[] = [userId];
+  let paramIndex = 2;
+
+  if (search) {
+    conditions.push(`title ILIKE $${paramIndex}`);
+    values.push(`%${search}%`);
+    paramIndex++;
+  }
+  if (status) {
+    conditions.push(`status = $${paramIndex}`);
+    values.push(status);
+    paramIndex++;
+  }
+  if (priority) {
+    conditions.push(`priority = $${paramIndex}`);
+    values.push(priority);
+    paramIndex++;
+  }
+
+  const whereClause = conditions.join(' AND ');
+
+  // Whitelist sortBy/sortOrder — never interpolate raw user input into SQL
+  const allowedSortColumns = ['created_at', 'due_date', 'priority', 'title'];
+  const safeSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'created_at';
+  const safeSortOrder = sortOrder === 'asc' ? 'ASC' : 'DESC';
+
+  const offset = (page - 1) * limit;
+
+  const dataQuery = `
+    SELECT * FROM tasks
+    WHERE ${whereClause}
+    ORDER BY ${safeSortBy} ${safeSortOrder}
+    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+  `;
+  const countQuery = `SELECT COUNT(*) FROM tasks WHERE ${whereClause}`;
+
+  const [dataResult, countResult] = await Promise.all([
+    pool.query<Task>(dataQuery, [...values, limit, offset]),
+    pool.query(countQuery, values),
+  ]);
+
+  return {
+    tasks: dataResult.rows,
+    total: parseInt(countResult.rows[0].count, 10),
+  };
 }
 
 export async function findTaskById(
@@ -88,4 +144,63 @@ export async function deleteTask(
     [taskId, userId]
   );
   return (result.rowCount ?? 0) > 0;
+}
+
+
+export async function getStatusBreakdown(
+  userId: string
+): Promise<{ status: string; count: string }[]> {
+  const result = await pool.query(
+    `SELECT status, COUNT(*) as count
+     FROM tasks
+     WHERE user_id = $1
+     GROUP BY status`,
+    [userId]
+  );
+  return result.rows;
+}
+
+export async function getPriorityBreakdown(
+  userId: string
+): Promise<{ priority: string; count: string }[]> {
+  const result = await pool.query(
+    `SELECT priority, COUNT(*) as count
+     FROM tasks
+     WHERE user_id = $1
+     GROUP BY priority`,
+    [userId]
+  );
+  return result.rows;
+}
+
+export async function getTotalActive(userId: string): Promise<number> {
+  const result = await pool.query(
+    `SELECT COUNT(*) as count FROM tasks
+     WHERE user_id = $1 AND status != 'completed'`,
+    [userId]
+  );
+  return parseInt(result.rows[0].count, 10);
+}
+
+export async function getCompletedToday(userId: string): Promise<number> {
+  const result = await pool.query(
+    `SELECT COUNT(*) as count FROM tasks
+     WHERE user_id = $1
+       AND status = 'completed'
+       AND completed_at::date = CURRENT_DATE`,
+    [userId]
+  );
+  return parseInt(result.rows[0].count, 10);
+}
+
+export async function getOverdue(userId: string): Promise<number> {
+  const result = await pool.query(
+    `SELECT COUNT(*) as count FROM tasks
+     WHERE user_id = $1
+       AND status != 'completed'
+       AND due_date IS NOT NULL
+       AND due_date < CURRENT_DATE`,
+    [userId]
+  );
+  return parseInt(result.rows[0].count, 10);
 }

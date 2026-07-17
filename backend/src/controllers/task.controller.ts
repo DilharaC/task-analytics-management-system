@@ -28,8 +28,8 @@ export async function listTasksHandler(
 ) {
   try {
     if (!req.user) throw new AppError('Not authenticated', 401);
-    const tasks = await taskService.listTasks(req.user.userId);
-    res.json(tasks);
+    const result = await taskService.listTasks(req.user.userId, req.query);
+    res.json(result); // { tasks: [...], total: number }
   } catch (err) {
     next(err);
   }
