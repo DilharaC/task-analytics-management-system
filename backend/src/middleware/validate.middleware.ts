@@ -27,3 +27,34 @@ export function validateLogin(
   }
   next();
 }
+
+
+export function validateCreateTask(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) {
+  const { title, priority } = req.body;
+  if (!title || typeof title !== 'string' || title.trim().length === 0) {
+    return next(new AppError('Title is required', 400));
+  }
+  if (priority && !['low', 'medium', 'high'].includes(priority)) {
+    return next(new AppError('Invalid priority value', 400));
+  }
+  next();
+}
+
+export function validateUpdateTask(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) {
+  const { priority, status } = req.body;
+  if (priority && !['low', 'medium', 'high'].includes(priority)) {
+    return next(new AppError('Invalid priority value', 400));
+  }
+  if (status && !['todo', 'in_progress', 'completed'].includes(status)) {
+    return next(new AppError('Invalid status value', 400));
+  }
+  next();
+}

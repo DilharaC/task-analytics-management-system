@@ -1,22 +1,56 @@
 
 
 
-
-
-
+### Register user
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "email": "test2@zentryx.com",
+  "email": "test3@zentryx.com",
   "password": "password1234",
-  "name": "Test User 2"
+  "name": "Test User 3"
 }
 
+### Login user
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test2@zentryx.com",
+  "email": "test3@zentryx.com",
   "password": "password1234"
 }
+
+### Create Task
+POST http://localhost:5000/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjE0ODg4LCJleHAiOjE3ODQzMDEyODh9.ENh3BJLYrdQNI7mZFYaQnolb4-oIr1R6G8xPXQJikGA
+
+
+{
+  "title": "Finish assignment",
+  "priority": "high",
+  "due_date": "2026-07-20"
+}
+
+
+
+### Update Task
+PUT http://localhost:5000/api/tasks/9b739672-e17f-4858-92d3-ff2e50048d8d
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjE0ODg4LCJleHAiOjE3ODQzMDEyODh9.ENh3BJLYrdQNI7mZFYaQnolb4-oIr1R6G8xPXQJikGA
+
+{
+  "title": "Finish assignment - Updated",
+  "description": "Updated description",
+  "priority": "high",
+  "status": "completed"
+}
+
+### Delete Task
+DELETE http://localhost:5000/api/tasks/9b739672-e17f-4858-92d3-ff2e50048d8d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjE0ODg4LCJleHAiOjE3ODQzMDEyODh9.ENh3BJLYrdQNI7mZFYaQnolb4-oIr1R6G8xPXQJikGA
+
+
+### Get All Tasks
+GET http://localhost:5000/api/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmZDVmOTk2MS1jM2NhLTRhNzgtOTIzNS1jMGQxNTRlYjgzMjQiLCJlbWFpbCI6InRlc3QzQHplbnRyeXguY29tIiwiaWF0IjoxNzg0MjY4MzIwLCJleHAiOjE3ODQzNTQ3MjB9.ub88axf2ouG6tyKtP8kBVik5vOVj8-lk1ukOFogTo90
