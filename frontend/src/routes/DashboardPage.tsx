@@ -1,30 +1,96 @@
-import { ListChecks, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  ListChecks,
+  CheckCircle2,
+  AlertTriangle,
+  Lock,
+} from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { StatusPieChart } from '../components/dashboard/StatusPieChart';
 import { PriorityBarChart } from '../components/dashboard/PriorityBarChart';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useAuth } from '../context/AuthContext';
 
-/**
- * Design tokens for this page (kept local — lift into tailwind.config if reused elsewhere)
- * ink    #12151C  primary text
- * muted  #6B7280  secondary text
- * line   #E2E4E9  hairline borders / dividers
- * paper  #F5F6F8  page background
- * active #2454A6  steel blue — active/in-progress
- * done   #1B7F5C  forest green — completed
- * late   #B5482E  rust — overdue
- *
- * Numbers use a monospace stack (tabular-nums) so figures read like an
- * instrument readout rather than generic UI copy — that's the one signature
- * move on this page; everything else stays flat and quiet.
- */
 
 export function DashboardPage() {
+  const { user, loading: authLoading } = useAuth();
   const { data, loading } = useAnalytics();
-  const { user } = useAuth();
 
   const now = new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+  // Logged-out visitor: show the dashboard shell with a login prompt, no data
+if (!authLoading && !user) {
+  return (
+    <>
+      <Header title="Welcome to Zentryx" subtitle="Log in to see your task analytics" />
+      <main className="relative p-8 bg-[#F9FAFB] h-full overflow-y-auto">
+        {/* Faint grid pattern background */}
+        <div
+          className="absolute inset-0 opacity-[0.4]"
+          style={{
+            backgroundImage:
+              'linear-gradient(#E2E4E9 1px, transparent 1px), linear-gradient(90deg, #E2E4E9 1px, transparent 1px)',
+            backgroundSize: '32px 32px',
+          }}
+        />
+
+        {/* Blurred preview content */}
+        <div className="relative flex flex-col gap-5 pointer-events-none select-none blur-[3px] opacity-60">
+          <div className="rounded-md border border-[#E2E4E9] bg-white overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E4E9]">
+              {[
+                { label: 'Active Tasks', accent: '#2454A6' },
+                { label: 'Completed Today', accent: '#1B7F5C' },
+                { label: 'Overdue', accent: '#B5482E' },
+              ].map(({ label, accent }) => (
+                <div key={label} className="relative p-6 pl-7">
+                  <span className="absolute left-0 top-0 bottom-0 w-[3px]" style={{ backgroundColor: accent }} />
+                  <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#6B7280] mb-3">{label}</p>
+                  <p className="font-mono text-4xl font-semibold text-[#12151C]">--</p>
+                  <p className="text-sm text-[#6B7280] mt-2.5">Log in to view</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="rounded-md border border-[#E2E4E9] bg-white p-6 h-72" />
+            <div className="rounded-md border border-[#E2E4E9] bg-white p-6 h-72" />
+          </div>
+        </div>
+
+        {/* Centered login card, overlaid on top */}
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+          <div className="rounded-lg border border-[#E2E4E9] bg-white shadow-lg p-10 sm:p-12 max-w-[460px] w-full text-center flex flex-col items-center gap-5">
+            <div className="w-16 h-16 rounded-xl bg-[#2454A6]/10 flex items-center justify-center">
+              <Lock size={26} className="text-[#2454A6]" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-[#12151C]">Welcome to Zentryx Task Manager</p>
+              <p className="text-sm text-[#6B7280] mt-3 leading-relaxed">
+                Manage your daily tasks, monitor productivity, and visualize progress through
+                interactive analytics. Sign in to continue.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full mt-1">
+              <Link
+                to="/login"
+                className="flex-1 px-4 py-2.5 rounded-md bg-[#2454A6] text-white text-sm font-medium hover:bg-[#1e4685] transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/register"
+                className="flex-1 px-4 py-2.5 rounded-md border border-[#E2E4E9] text-[#12151C] text-sm font-medium hover:bg-[#F5F6F8] transition-colors"
+              >
+                Register
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+}
 
   const kpis = data
     ? [
@@ -56,8 +122,7 @@ export function DashboardPage() {
     <>
       <Header title={`Hello, ${user?.name || 'there'}!`} subtitle="Here's where things stand across your active work." />
 
-      <main className="p-8 flex flex-col gap-5 bg-[#F5F6F8] min-h-full">
-        {/* Meta row — replaces the decorative welcome banner with something actually useful */}
+      <main className="p-8 flex flex-col gap-5 bg-[#F5F6F8] h-full overflow-y-auto">
         <div className="flex items-center justify-between text-sm">
           <p className="text-[#6B7280]">
             <span className="font-mono tabular-nums text-[#12151C]">{now}</span>
@@ -79,7 +144,6 @@ export function DashboardPage() {
           </div>
         ) : (
           <>
-            {/* KPI board — one panel, hairline-divided columns, colored edge = status */}
             <div className="rounded-md border border-[#E2E4E9] bg-white overflow-hidden">
               <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E2E4E9]">
                 {kpis.map(({ label, value, subtitle, icon: Icon, accent }) => (
@@ -96,7 +160,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="rounded-md border border-[#E2E4E9] bg-white p-6">
                 <div className="border-b border-[#E2E4E9] pb-3 mb-5">

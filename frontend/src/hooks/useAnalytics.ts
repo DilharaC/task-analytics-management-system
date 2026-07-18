@@ -7,6 +7,11 @@ export function useAnalytics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return; // skip the API call entirely — no token, no request, no 401
+    }
     api
       .get<AnalyticsSummary>('/analytics/summary')
       .then((res) => setData(res.data))

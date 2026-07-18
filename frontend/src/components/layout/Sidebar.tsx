@@ -9,7 +9,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -20,17 +20,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile overlay backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-[#12151C]/60 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 bg-[#12151C]/60 z-40 lg:hidden" onClick={onClose} />}
 
-      {/* Dark "console" rail — deliberate contrast against the light workspace,
-          reusing #12151C (the workspace's own ink/text color) as this panel's
-          surface, so the two feel like one system rather than a mismatched pair. */}
       <aside
         className={`fixed lg:static top-0 left-0 h-screen w-64 bg-[#12151C] text-white flex flex-col z-50
           transform transition-transform duration-200 ease-in-out
@@ -52,57 +43,75 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         <nav className="flex-1 px-3 flex flex-col gap-0.5 mt-2 overflow-y-auto">
-          {navItems.map(({ path, label, icon: Icon }) => (
-            <Link
-              key={path}
-              to={path}
-              onClick={onClose}
-              className={`relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-                isActive(path)
-                  ? 'text-white bg-white/[0.05]'
-                  : 'text-[#8B94A3] hover:text-white hover:bg-white/[0.03]'
-              }`}
-            >
-              {isActive(path) && (
-                <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-[#5B8DEF]" />
-              )}
-              <Icon size={17} />
-              {label}
-            </Link>
-          ))}
+          {navItems.map(({ path, label, icon: Icon }) => {
+            const disabled = !user;
+            return disabled ? (
+              <div
+                key={path}
+                title="Log in to access this page"
+                className="relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium text-[#4B5262] cursor-not-allowed"
+              >
+                <Icon size={17} />
+                {label}
+              </div>
+            ) : (
+              <Link
+                key={path}
+                to={path}
+                onClick={onClose}
+                className={`relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                  isActive(path) ? 'text-white bg-white/[0.05]' : 'text-[#8B94A3] hover:text-white hover:bg-white/[0.03]'
+                }`}
+              >
+                {isActive(path) && <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-[#5B8DEF]" />}
+                <Icon size={17} />
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Account-level actions — visually grouped and separated from primary
-            nav by a hairline, since they're a different kind of item, not just
-            more links. */}
         <div className="px-3 pb-3">
-          <Link
-            to="/settings"
-            onClick={onClose}
-            className={`relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-              isActive('/settings')
-                ? 'text-white bg-white/[0.05]'
-                : 'text-[#8B94A3] hover:text-white hover:bg-white/[0.03]'
-            }`}
-          >
-            {isActive('/settings') && (
-              <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-[#5B8DEF]" />
-            )}
-            <Settings size={17} />
-            Settings
-          </Link>
+          {user ? (
+            <Link
+              to="/settings"
+              onClick={onClose}
+              className={`relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+                isActive('/settings') ? 'text-white bg-white/[0.05]' : 'text-[#8B94A3] hover:text-white hover:bg-white/[0.03]'
+              }`}
+            >
+              <Settings size={17} />
+              Settings
+            </Link>
+          ) : (
+            <div className="flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium text-[#4B5262] cursor-not-allowed">
+              <Settings size={17} />
+              Settings
+            </div>
+          )}
         </div>
 
         <div className="mx-3 border-t border-white/10" />
 
         <div className="px-3 py-3">
-          <button
-            onClick={logout}
-            className="flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium text-[#8B94A3] hover:text-white hover:bg-white/[0.03] w-full transition-colors"
-          >
-            <LogOut size={17} />
-            Logout
-          </button>
+          {user ? (
+            <button
+              onClick={logout}
+              className="flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium text-[#8B94A3] hover:text-white hover:bg-white/[0.03] w-full transition-colors"
+            >
+              <LogOut size={17} />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={onClose}
+              className="flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium text-[#5B8DEF] hover:bg-white/[0.03] w-full transition-colors"
+            >
+              <LogOut size={17} className="rotate-180" />
+              Log in
+            </Link>
+          )}
         </div>
       </aside>
     </>

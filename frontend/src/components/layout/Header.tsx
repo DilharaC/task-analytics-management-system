@@ -1,6 +1,6 @@
 import { Bell, Menu } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useSidebar } from './ProtectedRoute';
+import { useSidebar } from './AppLayout';
 
 interface HeaderProps {
   title: string;
@@ -10,7 +10,7 @@ interface HeaderProps {
 export function Header({ title, subtitle }: HeaderProps) {
   const { user } = useAuth();
   const { setSidebarOpen } = useSidebar();
-  const initial = user?.name?.[0]?.toUpperCase() ?? user?.email[0]?.toUpperCase() ?? '?';
+  const initial = user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? '?';
 
   return (
     <header className="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6 bg-white border-b border-[#E2E4E9]">

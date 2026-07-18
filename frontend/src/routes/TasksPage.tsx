@@ -44,7 +44,7 @@ export function TasksPage() {
     <>
       <Header title="Tasks" subtitle="Manage and track all your tasks" />
 
-      <main className="p-8 flex flex-col gap-5 bg-[#F5F6F8] min-h-full">
+      <main className="p-8 flex flex-col gap-5 bg-[#F5F6F8] h-full overflow-y-auto">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-lg font-semibold text-[#12151C]">All Tasks</h1>
