@@ -9,7 +9,7 @@ import type { Task } from '../types/task.types';
 import { Header } from '../components/layout/Header';
 
 export function TasksPage() {
-  const [filters, setFilters] = useState<TaskFiltersType>({ page: 1, limit: 12 });
+  const [filters, setFilters] = useState<TaskFiltersType>({ page: 1, limit: 9 });
   const { tasks, total, loading, error, createTask, updateTask, deleteTask } = useTasks(filters);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
@@ -38,7 +38,7 @@ export function TasksPage() {
     }
   }
 
-  const totalPages = Math.ceil(total / (filters.limit ?? 12));
+  const totalPages = Math.ceil(total / (filters.limit ?? 9));
 
   return (
     <>
