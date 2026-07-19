@@ -69,6 +69,7 @@ export function TaskForm({ initialTask, onSubmit, onCancel }: TaskFormProps) {
           <label className={fieldLabel}>Due Date</label>
           <input
             type="date"
+            min={new Date().toISOString().slice(0, 10)}
             className={`${fieldInput} font-mono tabular-nums`}
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
