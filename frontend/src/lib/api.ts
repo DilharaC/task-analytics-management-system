@@ -13,13 +13,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Auto-logout on 401 (expired/invalid token)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      // Session expired mid-use (e.g. token expiry) — bounce to login
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

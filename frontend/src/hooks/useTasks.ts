@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../lib/api';
-import  type { Task, TaskListResponse } from '../types/task.types';
+import type { Task, TaskListResponse } from '../types/task.types';
 
 export interface TaskFilters {
   search?: string;
@@ -12,7 +12,7 @@ export interface TaskFilters {
   limit?: number;
 }
 
-export function useTasks(filters: TaskFilters) {
+export function useTasks(filters: TaskFilters, enabled: boolean = true) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -33,8 +33,12 @@ export function useTasks(filters: TaskFilters) {
   }, [JSON.stringify(filters)]);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
     fetchTasks();
-  }, [fetchTasks]);
+  }, [fetchTasks, enabled]);
 
   async function createTask(input: Partial<Task>) {
     await api.post('/tasks', input);
