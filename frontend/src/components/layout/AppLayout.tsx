@@ -1,5 +1,5 @@
-import { createContext, useContext, useState} from 'react';
-import type {  ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
 import { useAuth } from '../../context/AuthContext';
 import { Sidebar } from './Sidebar';
@@ -31,9 +31,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <SidebarContext.Provider value={{ sidebarOpen, setSidebarOpen }}>
-      <div className="flex min-h-screen bg-gray-50">
+     
+      <div className="flex h-screen overflow-hidden bg-gray-50">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <div className="flex-1 flex flex-col w-full lg:ml-0 min-w-0">{children}</div>
+        <div className="flex-1 flex flex-col w-full lg:ml-0 min-w-0 overflow-y-auto">{children}</div>
       </div>
     </SidebarContext.Provider>
   );
