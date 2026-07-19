@@ -21,7 +21,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   async function handleLogout() {
     await logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   }
 
   return (
@@ -65,19 +65,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="px-3 pb-3">
-          <Link
-            to="/settings"
-            onClick={onClose}
-            className={`relative flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-              isActive('/settings') ? 'text-white bg-white/[0.05]' : 'text-[#8B94A3] hover:text-white hover:bg-white/[0.03]'
-            }`}
-          >
-            <Settings size={17} />
-            Settings
-          </Link>
-        </div>
-
+        
         <div className="mx-3 border-t border-white/10" />
 
         <div className="px-3 py-3">
