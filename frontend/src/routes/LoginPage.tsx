@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { X, CheckSquare } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import loginImage from '../assets/login-image.jpg';
+
+// ---------------------------------------------------------------------------
+// Matches the design system established on the landing page:
+// Newsreader (serif, one italic accent per headline) + IBM Plex Sans (body)
+// + IBM Plex Mono (labels, eyebrow, annotations). Same palette — paper,
+// ink, ink-blue, rule, slate, stamp-amber. The entry-number eyebrow and the
+// live dot on the image panel are the same ledger vocabulary as the hero.
+// ---------------------------------------------------------------------------
+
+const FONT_SERIF = "'Newsreader', Georgia, serif";
+const FONT_SANS = "'IBM Plex Sans', system-ui, sans-serif";
+const FONT_MONO = "'IBM Plex Mono', ui-monospace, monospace";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -29,73 +42,132 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <div className="flex w-full max-w-4xl min-h-[620px] bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div
+      className="relative flex min-h-screen items-center justify-center bg-[#FAFAF9] p-4"
+      style={{ fontFamily: FONT_SANS }}
+    >
+      <Link
+        to="/"
+        aria-label="Close and return to home"
+        className="absolute right-6 top-6 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-[#D9DCE3] bg-white text-[#5B6472] transition-colors hover:bg-[#F1F0EC] hover:text-[#16233D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F]/40"
+      >
+        <X size={16} />
+      </Link>
+
+      <div className="flex min-h-[620px] w-full max-w-4xl overflow-hidden rounded-md border border-[#D9DCE3] bg-white shadow-[0_30px_60px_-24px_rgba(22,35,61,0.25)]">
         {/* Left: form */}
-        <div className="flex flex-1 items-center justify-center p-8 md:p-14 order-2 md:order-1">
-          <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-5">
+        <div className="relative order-2 flex flex-1 items-center justify-center p-8 md:order-1 md:p-14">
+          {/* faint ruled-paper texture, same device as the landing hero */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(to bottom, transparent 0, transparent 31px, #D9DCE3 31px, #D9DCE3 32px)',
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 70%, transparent 100%)',
+              WebkitMaskImage:
+                'linear-gradient(to bottom, transparent 0%, black 15%, black 70%, transparent 100%)',
+              opacity: 0.6,
+            }}
+          />
+
+          <form onSubmit={handleSubmit} className="relative flex w-full max-w-sm flex-col gap-6">
             <div>
-              <h1 className="text-[26px] text-gray-900" style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}>
-                Log in
+              <span
+                className="mb-3 inline-flex items-center gap-2 text-[11px] font-medium tracking-wider text-[#1E3A5F]"
+                style={{ fontFamily: FONT_MONO }}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-[#B45309]" />
+                ENTRY N&deg; 1,249 — ACCESS LOG
+              </span>
+              <h1
+                className="text-[30px] leading-none text-[#16233D]"
+                style={{ fontFamily: FONT_SERIF, fontWeight: 500 }}
+              >
+                Welcome <span className="italic">back.</span>
               </h1>
-              <p className="text-sm text-gray-500 mt-1.5">
+              <p className="mt-2 text-sm text-[#5B6472]">
                 No account?{' '}
-                <Link to="/register" className="font-medium" style={{ color: '#0F1729' }}>
+                <Link to="/register" className="font-medium text-[#1E3A5F] hover:underline">
                   Register
                 </Link>
               </p>
             </div>
 
             {error && (
-              <p className="text-sm text-red-700 bg-red-50 border border-red-100 px-3 py-2 rounded">
+              <p className="rounded-md border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
                 {error}
               </p>
             )}
 
             <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-[11px] font-medium tracking-[0.1em] uppercase text-gray-500 mb-1.5">
+                <label
+                  className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.12em] text-[#5B6472]"
+                  style={{ fontFamily: FONT_MONO }}
+                >
                   Email
                 </label>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div>
-                <label className="block text-[11px] font-medium tracking-[0.1em] uppercase text-gray-500 mb-1.5">
+                <label
+                  className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.12em] text-[#5B6472]"
+                  style={{ fontFamily: FONT_MONO }}
+                >
                   Password
                 </label>
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </div>
             </div>
 
             <Button
               type="submit"
               disabled={loading}
-              style={{ backgroundColor: '#0F1729' }}
-              className="text-white hover:opacity-90"
+              style={{ backgroundColor: '#1E3A5F' }}
+              className="rounded-md !bg-[#1E3A5F] text-white shadow-[0_10px_24px_-8px_rgba(30,58,95,0.55)] transition-all hover:-translate-y-0.5 hover:!bg-[#16283F] hover:shadow-[0_14px_28px_-8px_rgba(30,58,95,0.6)]"
             >
-              {loading ? 'Logging in...' : 'Log in'}
+              {loading ? 'Logging in…' : 'Log in'}
             </Button>
           </form>
         </div>
 
-        {/* Right: image panel — clean, minimal overlay */}
-        <div className="hidden md:block md:w-[50%] relative overflow-hidden order-1 md:order-2">
-          <img
-            src={loginImage}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* faint bottom scrim only, just enough to seat the wordmark */}
+        {/* Right: image panel */}
+        <div className="relative order-1 hidden overflow-hidden md:block md:w-[46%] md:order-2">
+          <img src={loginImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div
-            className="absolute inset-x-0 bottom-0 h-24"
-            style={{ background: 'linear-gradient(180deg, rgba(15,23,41,0) 20%, rgba(15,23,41,0.35) 100%)' }}
+            className="absolute inset-x-0 bottom-0 h-28"
+            style={{ background: 'linear-gradient(180deg, rgba(22,35,61,0) 20%, rgba(22,35,61,0.45) 100%)' }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'linear-gradient(160deg, rgba(22,35,61,0.12) 0%, rgba(22,35,61,0) 45%)' }}
           />
 
-          <div className="absolute top-8 left-8 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#34D399' }} />
-            <span className="text-xs font-medium tracking-[0.2em] uppercase text-white">
-              Flowline
+          <div className="absolute left-8 top-8 flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#B45309]/60 motion-reduce:animate-none" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#B45309]" />
             </span>
+            <span
+              className="text-xs font-semibold uppercase tracking-[0.2em] text-white"
+              style={{ fontFamily: FONT_MONO }}
+            >
+              Zentryx
+            </span>
+          </div>
+
+          <div className="absolute bottom-6 left-8 right-8">
+            <p
+              className="text-xs uppercase tracking-[0.14em] text-white/70"
+              style={{ fontFamily: FONT_MONO }}
+            >
+              A running record of your work
+            </p>
           </div>
         </div>
       </div>
