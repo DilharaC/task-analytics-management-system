@@ -24,8 +24,8 @@ A full-stack task management application with authentication, task CRUD, and an 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/zentryx-mini-erp.git
-cd zentryx-mini-erp
+git clone https://github.com/DilharaC/task-analytics-management-system.git
+cd task-analytics-management-system
 ```
 
 ### 2. Backend setup
@@ -40,7 +40,7 @@ Create a `.env` file in `backend/` (copy `.env.example` as a starting point):
 ```
 PORT=5000
 DATABASE_URL=postgresql://<user>:<password>@localhost:5432/zentryx
-JWT_SECRET=your_long_random_secret_string
+JWT_SECRET=your_long_random_secret_string 
 JWT_EXPIRES_IN=1d
 CORS_ORIGIN=http://localhost:5173
 ```
@@ -173,7 +173,7 @@ The full DDL lives in [`backend/src/db/schema.sql`](./backend/src/db/schema.sql)
 ## Project Structure
 
 ```
-zentryx-mini-erp/
+task-analytics-management-system/
 ├── backend/            # Express + TypeScript API
 │   └── src/
 │       ├── config/      # env loading
